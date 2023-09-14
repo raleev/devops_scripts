@@ -17,3 +17,5 @@ sudo apt-get update - y
 sudo apt-get install docker-ce -y
 
 sudo usermod -aG docker $USER
+
+sudo chmod 666 /var/run/docker.sock
