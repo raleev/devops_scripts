@@ -21,12 +21,13 @@ sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://dl.k8s
 sudo echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 # Update the repositiries
-sudo apt-get update
+sudo apt-get update -y
+sudo apt-get install cron -y
 
 
 
 # Use the same versions to avoid issues with the installation.
-sudo apt-get install -y cri-o cri-o-runc kubelet=1.28.0-00 kubeadm=1.28.1-00 kubectl=1.28.0-00
+sudo apt-get install -y cri-o cri-o-runc crio-tools kubelet=1.28.0-00 kubeadm=1.28.1-00 kubectl=1.28.0-00
 
 # Start the cri-o service
 sudo systemctl daemon-reload
@@ -56,6 +57,8 @@ sudo sysctl --system
 
 # Disable the swap
 sudo swapoff -a
+(sudo crontab -l 2>/dev/null; echo "@reboot /sbin/swapoff -a") | sudo crontab - || true
+
 
 sudo kubeadm init --pod-network-cidr=192.168.0.0/16
 
@@ -82,4 +85,3 @@ cd kubernetes_installation_crio/
 kubectl apply -f metrics-server.yaml
 cd ..
 rm -rf kubernetes_installation_crio/
-
