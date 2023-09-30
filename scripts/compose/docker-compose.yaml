@@ -1,0 +1,94 @@
+---
+version: "3.5"
+
+networks:
+  default:
+    driver: bridge
+    name: devops
+
+services:
+  dockerdind:
+    container_name: jenkins-docker
+    environment:
+    - DOCKER_TLS_CERTDIR=/certs
+    image: docker:dind
+    networks:
+      default:
+        aliases:
+          - docker
+    ports:
+      - "2376:2376"
+    privileged: true
+    command: --storage-driver=overlay2
+    restart: unless-stopped
+    stop_grace_period: 10m
+    volumes:
+      - jenkins_docker_certs:/certs/client
+      - jenkins_data:/var/jenkins_home
+
+  jenkins:
+    container_name: jenkins-blueocean
+    environment:
+      - PLUGINS_FORCE_UPGRADE=true
+      - DOCKER_HOST=tcp://docker:2376
+      - DOCKER_CERT_PATH=/certs/client
+      - DOCKER_TLS_VERIFY=1
+    image: jenkins-blueocean:lts-jdk17
+    networks:
+      default:
+        aliases:
+          - jenkins.demo.local
+    ports:
+      - "8082:8082"
+      - "8080:8080"
+      - "50000:50000"
+    restart: unless-stopped
+    volumes:
+      - jenkins_data:/var/jenkins_home:rw 
+      - jenkins_docker_certs:/certs/client:ro 
+
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube:10.2.1-community
+    networks:
+      default:
+        aliases:
+          - sonarqube.demo.local
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+    stop_grace_period: 10m
+    volumes:
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_temp:/opt/sonarqube/temp
+  nexus:
+    container_name: nexus3
+    image: sonatype/nexus3:latest
+    networks:
+      default:
+        aliases:
+          - nexus.demo.local
+    ports:
+      - "8081:8081"
+      - "8085:8085"
+    restart: unless-stopped
+    stop_grace_period: 10m
+    volumes:
+      - "nexus_data:/nexus-data"
+
+volumes:
+  nexus_data:
+  jenkins_docker_certs:
+  jenkins_data:
+    name: jenkins_data
+  sonarqube_conf:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_temp:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
