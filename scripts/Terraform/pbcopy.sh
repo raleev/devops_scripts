@@ -1,6 +1,6 @@
 #/bin/bash
 
-# PB copy
+# PB copy script
 
 sudo apt-get install xclip -y
 
