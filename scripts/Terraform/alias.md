@@ -1,0 +1,10 @@
+alias t=terraform
+alias ti="terraform init"
+alias tp="terraform plan"
+alias tv="terraform validate"
+alias tc="terraform console"
+alias ta="terraform apply"
+alias td="terraform destroy"
+alias tf="terraform fmt"
+alias ts="terraform show"
+alias tg="terragrunt
