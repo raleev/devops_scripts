@@ -39,3 +39,7 @@ sudo usermod -aG docker $USER
 
 
 sudo chmod 666 /var/run/docker.sock
+
+
+rm -rf docker.gpg*
+rm -rf docker.key

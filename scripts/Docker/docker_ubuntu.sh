@@ -19,3 +19,7 @@ sudo apt-get install docker-ce -y
 sudo usermod -aG docker $USER
 
 sudo chmod 666 /var/run/docker.sock
+
+sudo rm -rf docker.gpg*
+
+sudo rm -rf docker.key

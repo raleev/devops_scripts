@@ -15,6 +15,10 @@ sudo apt-get update
 # Install docker version - latest
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+sudo rm -rf docker.gpg*
+
+sudo rm -rf docker.key
+
 # Create a new group docker
 sudo groupadd docker
 
@@ -23,4 +27,7 @@ sudo usermod -aG docker $USER
 
 # Run and test the installation by running the hello-world container
 sudo docker run hello-world
+
+
+
 
